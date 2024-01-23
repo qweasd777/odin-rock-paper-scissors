@@ -23,7 +23,10 @@ function getPlayerChoice() {
     
     while(!validChoice)
     {
-        const choice = prompt("Rock, Paper or Scissors?").toLowerCase();
+        let choice = prompt("Rock, Paper or Scissors?");
+
+        if(choice != null)
+            choice = choice.toLowerCase();
 
         if(choice == "rock" || choice == "paper" || choice == "scissors")
         {
@@ -40,8 +43,9 @@ function getPlayerChoice() {
     return "-1";
 }
 
-
 function playRound(playerSelection, computerSelection) {
+    let score = 0;
+
     console.log("You played " + playerSelection);
     console.log("CPU played " + computerSelection);
     
@@ -56,10 +60,12 @@ function playRound(playerSelection, computerSelection) {
                 if(computerSelection == "paper")
                 {
                     console.log("You lose! Paper beats Rock!");
+                    score--;
                 }           
                 else // CPU scissors
                 {
                     console.log("You win! Rock beats Scissors!");
+                    score++;
                 }
                 break;
             
@@ -67,10 +73,12 @@ function playRound(playerSelection, computerSelection) {
                 if(computerSelection == "scissors")
                 {
                     console.log("You lose! Scissors beats Paper!");
+                    score--;
                 }           
                 else // CPU rock
                 {
                     console.log("You win! Paper beats Rock!");
+                    score++;
                 }
                 break;
     
@@ -78,16 +86,49 @@ function playRound(playerSelection, computerSelection) {
                 if(computerSelection == "rock")
                 {
                     console.log("You lose! Rock beats Scissors!");
+                    score--;
                 }           
                 else // CPU paper
                 {
                     console.log("You win! Scissors beats Paper!");
+                    score++;
                 }
             default:
         }
     }
+    return score;
 }
-   
-const playerSelection = getPlayerChoice();
-const computerSelection = getComputerChoice();
-playRound(playerSelection, computerSelection);
+
+function game(maxRd) {
+    let currentRd = 0;
+    let totalScore = 0;
+
+    while(currentRd < maxRd)
+    {
+        currentRd++;
+        console.log("Round " + currentRd);        
+        
+        let score = 0;  // keep track of current rd's score
+
+        // keep playing round until there's 1 winner
+        while(score == 0) {
+            const playerSelection = getPlayerChoice();
+            const computerSelection = getComputerChoice();
+
+            score = playRound(playerSelection, computerSelection);
+        }
+
+        if(score > 0)
+            totalScore += score;
+    }
+
+    console.log("GAME OVER!");
+    console.log("You won " + totalScore + " round(s).");
+
+    if(totalScore >= 3)
+        console.log("You're the winner!");
+    else
+        console.log("CPU wins!");
+} 
+
+//game(5);  // called on btn press in html
