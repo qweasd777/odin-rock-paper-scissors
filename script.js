@@ -80,29 +80,26 @@ function checkWinner(updateScore) {
     if(updateScore > 0)         // Player wins the round
     {
         playerScore++;
-        // display player won the rd
-        // update player score display
+        // display player won the rd & update player score display
         ui_playerScore.textContent = playerScoreUIText + playerScore;
     } 
     else if(updateScore < 0)    // CPU wins the round
     {
         cpuScore++;
-        // display cpu won the rd
-        // update cpu score display
+        // display cpu won the rd & update cpu score display
         ui_cpuScore.textContent = cpuScoreUIText + cpuScore;
     }
-    else                        // Tie
-    {
-        // display tie 
-    }
-
 
     if(playerScore >= 5 || cpuScore >= 5)
     {
         // display game over
+        roundResult.innerHTML += "<br><br><strong>GAME OVER!<strong>";
+
         // announce winner (whoever has 5 pts)
+        const winner = playerScore >= 5 ? "You" : "CPU";
+        roundResult.innerHTML += `<br><br>${winner} scored 5 points first!!!`;
+
         // show restart btn
-        roundResult.innerHTML += "<br><br>GAME OVER!";
         btn_restart.style.display = "block";
     }
 } 
