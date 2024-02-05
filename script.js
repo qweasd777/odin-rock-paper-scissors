@@ -17,41 +17,15 @@ function getComputerChoice() {
     }
 }
 
-// fn to get player choice. Will keep prompting for valid choice
-function getPlayerChoice() {
-    let validChoice = false;
-    
-    while(!validChoice)
-    {
-        let choice = prompt("Rock, Paper or Scissors?");
-
-        if(choice != null)
-            choice = choice.toLowerCase();
-
-        if(choice == "rock" || choice == "paper" || choice == "scissors")
-        {
-            validChoice = true;
-            return choice;
-        }
-        else
-        {
-            alert("INVALID CHOICE!");
-        }
-        
-    }
-
-    return "-1";
-}
-
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection) {
+    const computerSelection = getComputerChoice();
     let score = 0;
-
-    console.log("You played " + playerSelection);
-    console.log("CPU played " + computerSelection);
+    let roundResultText = "> You played " + playerSelection + "<br>" 
+                        + "> CPU played " + computerSelection + "<br>";
     
     if(computerSelection == playerSelection)
     {
-        console.log("It's a tie!");
+        roundResultText += "<br>It's a tie!";
     }
     else
     {
@@ -59,12 +33,12 @@ function playRound(playerSelection, computerSelection) {
             case "rock":
                 if(computerSelection == "paper")
                 {
-                    console.log("You lose! Paper beats Rock!");
+                    roundResultText += "<br>You lose! Paper beats Rock!";
                     score--;
                 }           
                 else // CPU scissors
                 {
-                    console.log("You win! Rock beats Scissors!");
+                    roundResultText += "<br>You win! Rock beats Scissors!";
                     score++;
                 }
                 break;
@@ -72,12 +46,12 @@ function playRound(playerSelection, computerSelection) {
             case "paper":
                 if(computerSelection == "scissors")
                 {
-                    console.log("You lose! Scissors beats Paper!");
+                    roundResultText += "<br>You lose! Scissors beats Paper!";
                     score--;
                 }           
                 else // CPU rock
                 {
-                    console.log("You win! Paper beats Rock!");
+                    roundResultText += "<br>You win! Paper beats Rock!";
                     score++;
                 }
                 break;
@@ -85,50 +59,105 @@ function playRound(playerSelection, computerSelection) {
             case "scissors": 
                 if(computerSelection == "rock")
                 {
-                    console.log("You lose! Rock beats Scissors!");
+                    roundResultText += "<br>You lose! Rock beats Scissors!";
                     score--;
                 }           
                 else // CPU paper
                 {
-                    console.log("You win! Scissors beats Paper!");
+                    roundResultText += "<br>You win! Scissors beats Paper!";
                     score++;
                 }
             default:
         }
     }
+    
+    roundResult.innerHTML = roundResultText;
+
     return score;
 }
 
-function game(maxRd) {
-    let currentRd = 0;
-    let totalScore = 0;
-
-    while(currentRd < maxRd)
+function checkWinner(updateScore) {
+    if(updateScore > 0)         // Player wins the round
     {
-        currentRd++;
-        console.log("Round " + currentRd);        
-        
-        let score = 0;  // keep track of current rd's score
-
-        // keep playing round until there's 1 winner
-        while(score == 0) {
-            const playerSelection = getPlayerChoice();
-            const computerSelection = getComputerChoice();
-
-            score = playRound(playerSelection, computerSelection);
-        }
-
-        if(score > 0)
-            totalScore += score;
+        playerScore++;
+        // display player won the rd
+        // update player score display
+        ui_playerScore.textContent = playerScoreUIText + playerScore;
+    } 
+    else if(updateScore < 0)    // CPU wins the round
+    {
+        cpuScore++;
+        // display cpu won the rd
+        // update cpu score display
+        ui_cpuScore.textContent = cpuScoreUIText + cpuScore;
+    }
+    else                        // Tie
+    {
+        // display tie 
     }
 
-    console.log("GAME OVER!");
-    console.log("You won " + totalScore + " round(s).");
 
-    if(totalScore >= 3)
-        console.log("You're the winner!");
-    else
-        console.log("CPU wins!");
+    if(playerScore >= 5 || cpuScore >= 5)
+    {
+        // display game over
+        // announce winner (whoever has 5 pts)
+        // show restart btn
+        roundResult.innerHTML += "<br><br>GAME OVER!";
+        btn_restart.style.display = "block";
+    }
 } 
 
-//game(5);  // called on btn press in html
+
+const btn_rock = document.querySelector('#btn_rock');
+const btn_paper = document.querySelector('#btn_paper');
+const btn_scissors = document.querySelector('#btn_scissors');
+const btn_restart = document.querySelector('#btn_restart');
+const ui_playerScore = document.querySelector('#ui_playerScore');
+const ui_cpuScore = document.querySelector('#ui_cpuScore');
+const roundResult = document.querySelector('#roundResult');
+
+// INIT
+const playerScoreUIText = "YOU: ";
+const cpuScoreUIText = "CPU: ";
+let playerScore = 0;
+let cpuScore = 0;
+
+function initGame() {
+    playerScore = 0;
+    cpuScore = 0;
+    ui_playerScore.textContent = playerScoreUIText + playerScore;
+    ui_cpuScore.textContent = cpuScoreUIText + cpuScore;
+    roundResult.innerHTML = "";
+    btn_restart.style.display = "none";
+}
+// INIT
+initGame();
+
+// BUTTONS
+btn_rock.addEventListener('click', () => {      
+    if(playerScore >= 5 || cpuScore >= 5)
+        return; 
+
+    const updateScore = playRound("rock");    
+    checkWinner(updateScore);
+});
+
+btn_paper.addEventListener('click', () => {   
+    if(playerScore >= 5 || cpuScore >= 5)
+        return; 
+
+    const updateScore = playRound("paper");    
+    checkWinner(updateScore);
+});
+
+btn_scissors.addEventListener('click', () => {   
+    if(playerScore >= 5 || cpuScore >= 5)
+        return; 
+
+    const updateScore = playRound("scissors");    
+    checkWinner(updateScore);
+});
+
+btn_restart.addEventListener('click', () => {  
+    initGame();
+});
