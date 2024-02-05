@@ -1,5 +1,5 @@
 # odin-rock-paper-scissors
-Simple JavaScript game
+Simple JavaScript game that uses DOM manipulation to display game elements (outcomes) and user interface on the HTML webpage.
 
 ## Links
 
